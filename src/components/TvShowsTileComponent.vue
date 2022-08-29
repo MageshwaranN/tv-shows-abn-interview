@@ -6,7 +6,7 @@
       @keydown="handleClick(tvShow?.id)">
       <img :src="tvShow?.image.original" alt="" width="240" height="320">
       <h3>{{tvShow?.name}}</h3>
-      <div class="tile__container-items-rating">{{tvShow?.rating.average}}</div>
+      <div class="tile__container-items-rating"><b>Rating: </b>{{tvShow?.rating.average}}</div>
       <div class="tile__container-items-premiered"><b>Premiered: </b>{{tvShow?.premiered}}</div>
       <div class="tile__container-items-genre">
         <div
@@ -60,6 +60,7 @@ export default defineComponent({
     box-shadow: 0px 0px 0px #005e5d;
     transition:  box-shadow .6s ease-out;
     box-shadow: .8px .9px 3px #005e5d;
+    cursor: pointer;
 
     &:hover{
       box-shadow: 1px 8px 20px #005e5d;

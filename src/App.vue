@@ -13,6 +13,7 @@
   text-align: center;
   color: #2c3e50;
   background-color: #edf7f7;
+  padding-bottom: 24px;
 
   h3 {
     margin-block-start: .75rem;
