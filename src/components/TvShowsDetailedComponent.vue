@@ -221,7 +221,7 @@ export default defineComponent({
       }
 
       &-others {
-        flex: 1.25 1 0;
+        flex: 1.75 1 0;
 
         p {
           display: flex;
