@@ -29,7 +29,7 @@ export default defineComponent({
       clearTimeout(this.debounce);
       this.debounce = setTimeout(() => {
         this.$emit('triggerSearch', {
-          searchText: (event.target as HTMLInputElement).value,
+          searchText: (event.target as HTMLInputElement).value as string,
         });
       }, 500);
     },

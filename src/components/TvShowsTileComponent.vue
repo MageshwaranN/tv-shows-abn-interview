@@ -4,9 +4,11 @@
       class="tile__container-items"
       @click="handleClick(tvShow?.id)"
       @keydown="handleClick(tvShow?.id)">
-      <img :src="tvShow?.image.original" alt="" width="240" height="320">
+      <img
+        :src="tvShow?.image?.original"
+        :alt="'cover image of '+ tvShow?.name" width="240" height="320">
       <h3>{{tvShow?.name}}</h3>
-      <div class="tile__container-items-rating"><b>Rating: </b>{{tvShow?.rating.average}}</div>
+      <div class="tile__container-items-rating"><b>Rating: </b>{{tvShow?.rating?.average}}</div>
       <div class="tile__container-items-premiered"><b>Premiered: </b>{{tvShow?.premiered}}</div>
       <div class="tile__container-items-genre">
         <div

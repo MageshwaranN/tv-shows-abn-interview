@@ -44,56 +44,107 @@ export default defineComponent({
     return {
       tvShowsList: [] as Array<any>,
       tvShowsListAPIResponse: [] as Array<any>,
+      tvShowsListAPIResponseSearch: [] as Array<any>,
       tvShowsListFull: [] as Array<any>,
       tvShowsGenreList: [] as Array<string>,
       defaultNoOfTilesToShow: 30,
       currentStartIndex: 0,
+      isSearchActive: false,
     };
   },
   created() {
-    axios
-      .get('https://api.tvmaze.com/shows')
-      .then((res: any) => {
-        this.tvShowsListAPIResponse = res.data.map((showDetails: any) => {
-          const {
-            name,
-            id,
-            genres,
-            image,
-            rating,
-            premiered,
-          } = showDetails;
-          return {
-            id,
-            name,
-            genres,
-            image,
-            rating,
-            premiered,
-          };
-        });
-
-        Object.assign(this.tvShowsListFull, this.tvShowsListAPIResponse);
-
-        Object.assign(this.tvShowsList, this.tvShowsListFull
-          .slice(this.currentStartIndex, this.defaultNoOfTilesToShow));
-
-        this.currentStartIndex += 30;
-
-        this.tvShowsGenreList = Array
-          .from(new Set<string>([]
-            .concat([], ...(this.tvShowsListAPIResponse.map((tvShow: any) => tvShow.genres)))));
-      })
-      .catch((error) => console.log(error));
+    this.init();
   },
   methods: {
+    init() {
+      axios
+        .get('https://api.tvmaze.com/shows')
+        .then((res: any) => {
+          this.tvShowsListAPIResponse = res.data.map((showDetails: any) => {
+            const {
+              name,
+              id,
+              genres,
+              image,
+              rating,
+              premiered,
+            } = showDetails;
+            return {
+              id,
+              name,
+              genres,
+              image,
+              rating,
+              premiered,
+            };
+          });
+
+          Object.assign(this.tvShowsListFull, this.tvShowsListAPIResponse);
+
+          Object.assign(this.tvShowsList, this.tvShowsListFull
+            .slice(this.currentStartIndex, this.defaultNoOfTilesToShow));
+
+          this.currentStartIndex += 30;
+
+          this.tvShowsGenreList = Array
+            .from(new Set<string>([]
+              .concat([], ...(this.tvShowsListAPIResponse.map((tvShow: any) => tvShow.genres)))));
+
+          this.isSearchActive = false;
+        })
+        .catch((error) => console.log(error));
+    },
     triggerSearch(payload: {searchText: string}) {
-      console.log(payload);
+      this.currentStartIndex = 0;
+      this.tvShowsListFull = [];
+      this.tvShowsList = [];
+      this.tvShowsGenreList = [];
+      if (payload.searchText !== '') {
+        axios
+          .get(`https://api.tvmaze.com/search/shows?q=${payload.searchText}`)
+          .then((res: any) => {
+            this.tvShowsListAPIResponseSearch = res.data.map((showDetails: any) => {
+              const {
+                name,
+                id,
+                genres,
+                image,
+                rating,
+                premiered,
+              } = showDetails.show;
+              return {
+                id,
+                name,
+                genres,
+                image,
+                rating,
+                premiered,
+              };
+            });
+
+            Object.assign(this.tvShowsListFull, this.tvShowsListAPIResponseSearch);
+
+            Object.assign(this.tvShowsList, this.tvShowsListFull
+              .slice(this.currentStartIndex, this.defaultNoOfTilesToShow));
+
+            this.currentStartIndex += 30;
+
+            this.tvShowsGenreList = Array
+              .from(new Set<string>([].concat([], ...(this.tvShowsListAPIResponseSearch
+                .map((tvShow: any) => tvShow.genres)))));
+
+            this.isSearchActive = true;
+          })
+          .catch((error) => console.log(error));
+      } else {
+        this.init();
+      }
     },
     filterGenreList(payload: {genre: string}) {
       this.currentStartIndex = 0;
       this.tvShowsList = [];
-      this.tvShowsListFull = this.tvShowsListAPIResponse
+      this.tvShowsListFull = (this.isSearchActive
+        ? this.tvShowsListAPIResponseSearch : this.tvShowsListAPIResponse)
         .filter((item: any) => item.genres.indexOf(payload.genre) !== -1);
 
       Object.assign(this.tvShowsList, this.tvShowsListFull
