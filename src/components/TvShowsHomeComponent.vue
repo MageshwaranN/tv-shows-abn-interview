@@ -199,6 +199,7 @@ export default defineComponent({
         border-radius: 12px;
         min-width: 148px;
         border: none;
+        cursor: pointer;
       }
     }
   }

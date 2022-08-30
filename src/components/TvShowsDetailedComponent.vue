@@ -148,15 +148,15 @@ export default defineComponent({
             embedded: {
               cast: cast.map((item: any) => ({
                 person: {
-                  name: item.person.name,
-                  birthday: item.person.birthday,
-                  gender: item.person.gender,
+                  name: item.person?.name,
+                  birthday: item.person?.birthday,
+                  gender: item.person?.gender,
                   image: {
-                    original: item.person.image.original,
+                    original: item.person?.image?.original,
                   },
                 },
                 character: {
-                  name: item.character.name,
+                  name: item.character?.name,
                 },
               } as Cast)) as Array<Cast>,
             },
