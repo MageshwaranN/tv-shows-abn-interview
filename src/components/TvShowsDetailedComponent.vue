@@ -50,6 +50,7 @@
         </p>
       </section>
     </section>
+    <TvShowsDetailedSE v-if="route.params.id" :id="route.params.id"></TvShowsDetailedSE>
   </div>
 </template>
 
@@ -57,6 +58,8 @@
 import { defineComponent } from 'vue';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
+
+import TvShowsDetailedSE from './TvShowsS&EDetailedComponent.vue';
 
 interface Cast {
   person: {
@@ -94,6 +97,7 @@ interface Details {
 export default defineComponent({
   name: 'TvShowsDetailed',
   components: {
+    TvShowsDetailedSE,
   },
   props: {
     title: String,
@@ -101,62 +105,65 @@ export default defineComponent({
   data() {
     return {
       showDetails: null as null | Details,
+      route: useRoute(),
     };
   },
   created() {
-    const route = useRoute();
-    axios
-      .get(`https://api.tvmaze.com/shows/${route.params.id}?embed=cast`)
-      .then((res) => {
-        const {
-          name,
-          language,
-          genres,
-          status,
-          image,
-          rating: {
-            average,
-          },
-          premiered,
-          ended,
-          summary,
-          _embedded: {
-            cast,
-          },
-        } = res.data;
-
-        this.showDetails = {
-          name,
-          language,
-          genres,
-          status,
-          image,
-          rating: {
-            average,
-          },
-          premiered,
-          ended,
-          summary,
-          embedded: {
-            cast: cast.map((item: any) => ({
-              person: {
-                name: item.person.name,
-                birthday: item.person.birthday,
-                gender: item.person.gender,
-                image: {
-                  original: item.person.image.original,
-                },
-              },
-              character: {
-                name: item.character.name,
-              },
-            } as Cast)) as Array<Cast>,
-          },
-        };
-      })
-      .catch((error) => console.log(error));
+    this.init();
   },
   methods: {
+    init() {
+      axios
+        .get(`https://api.tvmaze.com/shows/${this.route.params.id}?embed=cast`)
+        .then((res) => {
+          const {
+            name,
+            language,
+            genres,
+            status,
+            image,
+            rating: {
+              average,
+            },
+            premiered,
+            ended,
+            summary,
+            _embedded: {
+              cast,
+            },
+          } = res.data;
+
+          this.showDetails = {
+            name,
+            language,
+            genres,
+            status,
+            image,
+            rating: {
+              average,
+            },
+            premiered,
+            ended,
+            summary,
+            embedded: {
+              cast: cast.map((item: any) => ({
+                person: {
+                  name: item.person.name,
+                  birthday: item.person.birthday,
+                  gender: item.person.gender,
+                  image: {
+                    original: item.person.image.original,
+                  },
+                },
+                character: {
+                  name: item.character.name,
+                },
+              } as Cast)) as Array<Cast>,
+            },
+          };
+        })
+        .catch((error) => console.log(error));
+    },
   },
 });
 </script>
